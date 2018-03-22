@@ -7,11 +7,14 @@ For more information, see:
 http://python-jamo.readthedocs.org/ko/latest/
 """
 
+from __future__ import (division, unicode_literals)
+
 import os
+import re
+import json
+from six import unichr
 from sys import stderr
 from itertools import chain
-import json
-import re
 
 
 _ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -28,12 +31,12 @@ with open(os.path.join(_ROOT, 'data', "U+31xx.json"), 'r') as namedata:
     _HCJ_TO_NAME = json.load(namedata)
 _HCJ_REVERSE_LOOKUP = {name: char for char, name in _HCJ_TO_NAME.items()}
 
-JAMO_LEADS = [chr(_) for _ in range(0x1100, 0x115F)]
-JAMO_LEADS_MODERN = [chr(_) for _ in range(0x1100, 0x1113)]
-JAMO_VOWELS = [chr(_) for _ in range(0x1161, 0x11A8)]
-JAMO_VOWELS_MODERN = [chr(_) for _ in range(0x1161, 0x1176)]
-JAMO_TAILS = [chr(_) for _ in range(0x11A8, 0x1200)]
-JAMO_TAILS_MODERN = [chr(_) for _ in range(0x11A8, 0x11C3)]
+JAMO_LEADS = [unichr(_) for _ in range(0x1100, 0x115F)]
+JAMO_LEADS_MODERN = [unichr(_) for _ in range(0x1100, 0x1113)]
+JAMO_VOWELS = [unichr(_) for _ in range(0x1161, 0x11A8)]
+JAMO_VOWELS_MODERN = [unichr(_) for _ in range(0x1161, 0x1176)]
+JAMO_TAILS = [unichr(_) for _ in range(0x11A8, 0x1200)]
+JAMO_TAILS_MODERN = [unichr(_) for _ in range(0x11A8, 0x11C3)]
 
 
 class InvalidJamoError(Exception):
@@ -41,8 +44,7 @@ class InvalidJamoError(Exception):
     def __init__(self, message, jamo):
         super(InvalidJamoError, self).__init__(message)
         self.jamo = hex(ord(jamo))
-        print("Could not parse jamo: U+{code}".format(code=self.jamo[2:]),
-              file=stderr)
+        stderr.write("Could not parse jamo: U+{code}\n".format(code=self.jamo[2:]))
 
 
 def _hangul_char_to_jamo(syllable):
@@ -55,12 +57,12 @@ def _hangul_char_to_jamo(syllable):
         vowel = 1 + ((rem - tail) % 588) // 28
         lead = 1 + rem // 588
         if tail:
-            return (chr(lead + _JAMO_LEAD_OFFSET),
-                    chr(vowel + _JAMO_VOWEL_OFFSET),
-                    chr(tail + _JAMO_TAIL_OFFSET))
+            return (unichr(lead + _JAMO_LEAD_OFFSET),
+                    unichr(vowel + _JAMO_VOWEL_OFFSET),
+                    unichr(tail + _JAMO_TAIL_OFFSET))
         else:
-            return (chr(lead + _JAMO_LEAD_OFFSET),
-                    chr(vowel + _JAMO_VOWEL_OFFSET))
+            return (unichr(lead + _JAMO_LEAD_OFFSET),
+                    unichr(vowel + _JAMO_VOWEL_OFFSET))
     else:
         return syllable
 
@@ -71,7 +73,7 @@ def _jamo_to_hangul_char(lead, vowel, tail=0):
     lead = ord(lead) - _JAMO_LEAD_OFFSET
     vowel = ord(vowel) - _JAMO_VOWEL_OFFSET
     tail = ord(tail) - _JAMO_TAIL_OFFSET if tail else 0
-    return chr(tail + (vowel - 1) * 28 + (lead - 1) * 588 + _JAMO_OFFSET)
+    return unichr(tail + (vowel - 1) * 28 + (lead - 1) * 588 + _JAMO_OFFSET)
 
 
 def _jamo_char_to_hcj(char):
@@ -158,9 +160,9 @@ def get_jamo_class(jamo):
     thus includes filler characters as having a class.
     """
     # TODO: Perhaps raise a separate error for U+3xxx jamo.
-    if jamo in JAMO_LEADS or jamo == chr(0x115F):
+    if jamo in JAMO_LEADS or jamo == unichr(0x115F):
         return "lead"
-    if jamo in JAMO_VOWELS or jamo == chr(0x1160) or\
+    if jamo in JAMO_VOWELS or jamo == unichr(0x1160) or\
             0x314F <= ord(jamo) <= 0x3163:
         return "vowel"
     if jamo in JAMO_TAILS:

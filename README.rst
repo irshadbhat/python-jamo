@@ -21,13 +21,9 @@ phonetic and spelling analysis.
 Installation
 ------------
 
-To install Jamo from `pypi`_, simply:
+To install Jamo from simply:
 
-.. code-block:: bash
-
-   $ pip install jamo
-
-The jamo module is Python 3 only. Viva the bleeding edge!
+    pip install https://github.com/irshadbhat/python-jamo/archive/master.zip
 
 
 Documentation
@@ -54,6 +50,5 @@ modify it, and to distribute modified versions of the software, under the
 terms of the license, without concern for royalties.
 
 
-.. _pypi: https://pypi.python.org/pypi/jamo
 .. _English: http://python-jamo.readthedocs.org/en/latest/
 .. _Korean: http://python-jamo.readthedocs.org/ko/latest/

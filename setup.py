@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
-from setuptools import setup, find_packages
-from jamo import __version__
+
+import io
 import sys
+from jamo import __version__
+from setuptools import setup, find_packages
 
-if sys.version_info <= (3, 0):
-    print("ERROR: jamo requires Python 3.0 or later "
-          "(bleeding edge preferred)", file=sys.stderr)
-    sys.exit(1)
-
-with open('README.rst', encoding='utf8') as f:
+with io.open('README.rst', encoding='utf8') as f:
     long_description = f.read()
 
 setup(
