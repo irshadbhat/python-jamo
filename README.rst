@@ -21,7 +21,7 @@ phonetic and spelling analysis.
 Installation
 ------------
 
-To install Jamo from simply:
+::
 
     pip install https://github.com/irshadbhat/python-jamo/archive/master.zip
 
